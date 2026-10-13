@@ -81,19 +81,51 @@ def roles(*allowed):
         return wrapped
     return deco
 
+
 BASE = """
-<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AcxiomCRM Lite</title><style>
-body{font:16px Arial;margin:28px;background:#f2f5fa;color:#182943}
-nav,a{margin-right:12px;color:#17549a}main,.card{background:white;padding:18px;border-radius:10px;margin:16px 0}
-input,button{padding:9px;margin:5px}table{border-collapse:collapse;width:100%;background:white}
-td,th{padding:9px;border-bottom:1px solid #ddd;text-align:left}button{cursor:pointer}
-</style></head><body><h1>AcxiomCRM Lite</h1>
-{% if user %}<p>{{user}} · {{role}}</p><nav><a href="/">Dashboard</a>
-{% for t in tables %}<a href="/{{t}}">{{t.title()}}</a>{% endfor %}
-<a href="/reports">Reports</a><a href="/audit">Audit</a><a href="/logout">Logout</a></nav>{% endif %}
-{{ body|safe }}</body></html>
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AcxiomCRM Lite</title>
+<style>
+body {
+    font: 16px Arial;
+    margin: 28px;
+    background: #f2f5fa;
+    color: #182943;
+}
+nav, a { margin-right: 12px; color: #17549a; }
+main, .card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    margin: 16px 0;
+}
+input, button { padding: 9px; margin: 5px; }
+table { border-collapse: collapse; width: 100%; background: white; }
+td, th { padding: 9px; border-bottom: 1px solid #ddd; text-align: left; }
+button { cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>AcxiomCRM Lite</h1>
+
+{% if user %}
+<p>{{ user }} · {{ role }}</p>
+<nav>
+<a href="/">Dashboard</a>
+{% for t in tables %}
+<a href="/{{ t }}">{{ t.title() }}</a>
+{% endfor %}
+<a href="/reports">Reports</a>
+<a href="/audit">Audit</a>
+<a href="/logout">Logout</a>
+</nav>
+{% endif %}
+
 {{ body|safe }}
+
 <script>
 document.querySelectorAll("input").forEach(input => {
     if (input.name === "email") input.type = "email";
@@ -108,7 +140,6 @@ document.querySelectorAll("input").forEach(input => {
     }
 
     if (["amount", "value"].includes(input.name)) input.step = "any";
-
     if (input.name === "probability") input.max = "100";
 });
 
@@ -145,9 +176,10 @@ document.querySelectorAll("form[method='post']").forEach(form => {
     });
 });
 </script>
-</body></html>
-
+</body>
+</html>
 """
+
 
 def page(body, **data):
     return render_template_string(BASE, body=body, user=session.get("user"),
